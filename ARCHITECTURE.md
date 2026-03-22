@@ -1,9 +1,9 @@
+
 ## Simple flowchart
 ``` mermaid
 flowchart TD
-    A-->B
+    Box\nBox2-->B
     A-->C
     B-->D
     C-->D
     D-->E
-```
