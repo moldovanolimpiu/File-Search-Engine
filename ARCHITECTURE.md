@@ -17,8 +17,9 @@ flowchart TD
     subgraph Group1[" "]
         A
         B
+        C
     end
-
+    C["Frontend Application"] --> A["Backend Application"]
     A["Backend Application\n\n"] --> B["Database"]
 
 ```
