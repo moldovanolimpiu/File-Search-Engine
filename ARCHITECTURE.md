@@ -46,11 +46,22 @@ implements the search mechanism"]
 ``` mermaid
 flowchart TD
 
-    A[Query Processor] --> B[File Search]
+    subgraph Group1[" "]
+        A
+        B
+        C
+        D
+        E
+        F
+    end
+    G["Frontend Application\n\nThe UI which the client can use to communicate with the application"] --> A
+    A[Query Processor\n\nProcesses the queries coming from the front end] --> B[File Search\n\nLooks for the file using the DIM]
     C[File Traversal] --> D[Metadata Extractor]
     D-->E["File indexer"]
     E-->F["Database interaction module"]
     B-->F
+    F-->H["Database\n[Relational database schema]\nIndexes and stores file data"]
+    C -->|Interacts with the computer to get the files| I["Computer"]
     
 
 
