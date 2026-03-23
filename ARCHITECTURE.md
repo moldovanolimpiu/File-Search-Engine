@@ -69,7 +69,7 @@ flowchart TD
 
 ``` mermaid
 classDiagram
-    subgraph Group1[" "]
+    subgraph Group1["Something"]
         class Animal {
             +name: string
             +age: int
