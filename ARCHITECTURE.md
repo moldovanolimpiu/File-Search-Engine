@@ -70,7 +70,7 @@ flowchart TD
 
 ``` mermaid
 classDiagram
-    namespace Search Controller {
+    namespace Controller {
         class SearchController {
             +sendUserInput(): void
         }
