@@ -102,6 +102,32 @@ classDiagram
         }
     }
 
+    namespace File_Traversal {
+        class FileTraverser {
+            +traverseSystem(): String
+            
+        }
+    }
+
+    namespace Metadata_Extractor {
+        class MetadataExt {
+            -name: String
+            -path: String
+            -extension: String
+            -size: Int
+            +fileExtract(): void
+            
+        }
+    }
+
+    amespace File_Indexer {
+        class FileIndexer {
+            +formDBQuery(): String
+            
+        }
+    }
+    
+
 
 ```
 
