@@ -19,7 +19,7 @@ flowchart TD
         B
         C
     end
-    C["Frontend Application"] --> A["Backend Application"]
+    C["Frontend Application\n\nThe UI which the client can use to communicate with the application"] --> A["Backend Application"]
     A["Backend Application\n\n"] --> B["Database"]
 
 ```
