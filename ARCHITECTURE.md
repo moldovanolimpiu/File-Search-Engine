@@ -26,4 +26,20 @@ implements the search mechanism"]
     A -->|Interacts with the computer to get the files| E["Computer"]
 
 ```
+
+## Component diagram - Frontend App
+
+``` mermaid
+flowchart TD
+    subgraph Group1[" "]
+        A
+    end
+C["User\n[Person]\nThe user who searches for any file"] -->|Searches for a specific file or files| A
+A["Search Controller\n\nHandles the user input and sends it to the backend"] --> |Writes to| B ["Backend Application\n\nMakes the connection between the UI and the database, performs queries,
+implements the search mechanism"]
+
+```
+
+
+
    
