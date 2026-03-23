@@ -36,7 +36,7 @@ flowchart TD
     end
 
     C["User\n[Person]\nThe user who searches for any file"] -->|Searches for a specific file or files| A
-    A["Search Controller\n\nHandles the user input and sends it to the backend"] --> |Writes to| B ["Backend Application\n\nMakes the connection between the UI and the database, performs queries,
+    A["Search Controller\n\nHandles the user input and sends it to the backend"] --> |Writes to| B["Backend Application\n\nMakes the connection between the UI and the database, performs queries,
 implements the search mechanism"]
 
 ```
