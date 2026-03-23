@@ -86,14 +86,14 @@ classDiagram
         }
     }
 
-classDiagram
+
     namespace File_Search {
         class FileSearcher {
             +searchFile(query: String): String
         }
     }
 
-classDiagram
+
     namespace Database_Interaction_Module {
         class RepoAccess {
             +search(query: String): String
