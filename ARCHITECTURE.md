@@ -41,15 +41,21 @@ implements the search mechanism"]
 
 ```
 
-## Component diagram - Database
+## Component diagram - Backend App
 
 ``` mermaid
 flowchart TD
-    subgraph Group1[" "]
-        A
-    end
-    B["Backend Application\n\nMakes the connection between the UI and the database, performs queries,
-implements the search mechanism"] --> A["Database\n[Relational database schema]\nIndexes and stores file data"]
+
+    A[Query Processor] --> B[File Search]
+    C[File Traversal] --> D[Metadata Extractor]
+    D-->E["File indexer"]
+    E-->F["Database interaction module"]
+    B-->F
+    
+
+
+
+    
 
 ```
 
