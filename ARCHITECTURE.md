@@ -69,13 +69,13 @@ flowchart TD
 
 ``` mermaid
 classDiagram
-    subgraph Group1[" "]
+    namespace Group1 {
         class Animal {
             +name: string
             +age: int
             +makeSound(): void
         }
-    end
+    }
 ```
 
 
