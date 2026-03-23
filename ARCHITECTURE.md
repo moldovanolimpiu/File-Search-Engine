@@ -24,7 +24,7 @@ flowchart TD
 implements the search mechanism"]
     A --> B["Database\n[Relational database schema]\nIndexes and stores file data"]
     A -->|Interacts with the computer to get the files| E["Computer"]
-    A --- B
+    A --- E
 
 ```
    
