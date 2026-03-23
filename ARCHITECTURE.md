@@ -77,5 +77,16 @@ classDiagram
     }
 ```
 
+## Class diagram - Backend App
+``` mermaid
+classDiagram
+    namespace Query Processor {
+        class QueryProcess {
+            +processQuery(query: String): String
+        }
+    }
+
+
+```
 
    
