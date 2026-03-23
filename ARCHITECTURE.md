@@ -5,8 +5,8 @@ flowchart TD
     subgraph Group1[" "]
         A
     end
-    B["User\n[Person]"] -->|Searches for a specific file or files| A["File Search Engine\n[Software System]"]
-    A["File Search Engine\n[Software System]"] -->|Gets the information from| C["Computer"]
+    B["User\n[Person]\nThe user who searches for any file"] -->|Searches for a specific file or files| A["File Search Engine\n[Software System]"]
+    A["File Search Engine\n[Software System]"] -->|Interacts with the computer to get the files| C["Computer"]
 ```
 
 ## Container diagram
@@ -19,9 +19,10 @@ flowchart TD
         B
         C
     end
+    D["User\n[Person]\nThe user who searches for any file"] -->|Searches for a specific file or files| C
     C["Frontend Application\n\nThe UI which the client can use to communicate with the application"] --> A["Backend Application\n\nMakes the connection between the UI and the database, performs queries,
 implements the search mechanism"]
-    A --> B["Database"]
+    A --> B["Database\n[Relational database schema]\nIndexes and stores file data"]
 
 ```
    
