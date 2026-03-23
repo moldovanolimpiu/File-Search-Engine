@@ -69,16 +69,13 @@ flowchart TD
 
 ``` mermaid
 classDiagram
-subgraph Group1[" "]
-        Animal
+    subgraph Group1[" "]
+        class Animal {
+            +name: string
+            +age: int
+            +makeSound(): void
+        }
     end
-class Animal {
-        +name: string
-        +age: int
-        +makeSound(): void
-    }
-
-   
 ```
 
 
