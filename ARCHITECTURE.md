@@ -66,14 +66,13 @@ flowchart TD
 
 
 ```
+## Class diagram - Frontend App
 
 ``` mermaid
 classDiagram
-    namespace Group1 {
-        class Animal {
-            +name: string
-            +age: int
-            +makeSound(): void
+    namespace Search Controller {
+        class SearchController {
+            +sendUserInput(): void
         }
     }
 ```
