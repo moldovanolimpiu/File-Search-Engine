@@ -67,5 +67,19 @@ flowchart TD
 
 ```
 
+``` mermaid
+classDiagram
+subgraph Group1[" "]
+        Animal
+    end
+class Animal {
+        +name: string
+        +age: int
+        +makeSound(): void
+    }
+
+   
+```
+
 
    
