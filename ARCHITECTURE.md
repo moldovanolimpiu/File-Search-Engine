@@ -120,7 +120,7 @@ classDiagram
         }
     }
 
-    amespace File_Indexer {
+    namespace File_Indexer {
         class FileIndexer {
             +formDBQuery(): String
             
