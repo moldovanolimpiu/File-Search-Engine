@@ -13,7 +13,7 @@ flowchart TD
 
 ``` mermaid
 
-flowchart TD
+flowchart LR
     subgraph Group1[" "]
         A
         B
