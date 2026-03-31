@@ -1,7 +1,6 @@
 package fse;
 
 import org.apache.tika.Tika;
-import fse.*;
 
 
 import java.io.File;
@@ -12,6 +11,7 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class FileCrawler {
@@ -41,12 +41,16 @@ public class FileCrawler {
     }
 
 
-    public void crawlFiles(String path) throws IOException, NoSuchAlgorithmException, SQLException {
+    public CrawlerReport crawlFiles(String path) throws IOException, NoSuchAlgorithmException, SQLException {
         Path start = Paths.get(path);
         MessageDigest mdigest = MessageDigest.getInstance("MD5");
 
         Tika tika = new Tika();
         FileRepository fileRepository = new FileRepository();
+        AtomicInteger countTextFilesFound = new AtomicInteger();
+        AtomicInteger countFileInsertions = new AtomicInteger();
+        AtomicInteger countFileUpdates = new AtomicInteger();
+        int countFileDeletions;
 
 
         try {
@@ -60,7 +64,15 @@ public class FileCrawler {
                                 String content = Files.readString(p);
 
                                 FileMetadata fileMetadata = new FileMetadata(p,dirpath,file,mdigest,content);
-                                fileRepository.insertDatabase(fileMetadata);
+                                int val = fileRepository.insertDatabase(fileMetadata);
+                                countTextFilesFound.addAndGet(1);
+                                if(val == 1){
+                                    countFileInsertions.addAndGet(1);
+                                }else{
+                                    if(val == 2){
+                                        countFileUpdates.addAndGet(1);
+                                    }
+                                }
 
                             }
                         }
@@ -71,7 +83,10 @@ public class FileCrawler {
         }catch(IOException e){
             e.printStackTrace();
         }
-        fileRepository.purgeNonExistentFiles();
+        countFileDeletions = fileRepository.purgeNonExistentFiles();
+
+        return new CrawlerReport(countTextFilesFound.get(),countFileInsertions.get(),countFileDeletions, countFileUpdates.get());
+
     }
 
 
