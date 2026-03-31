@@ -76,7 +76,7 @@ public class FileRepository {
         st.executeUpdate("UPDATE files SET exists_flag = false");
     }
 
-    public List<String> searchFilename(String query) throws SQLException {
+    public List<FileMetadata> searchFilename(String query) throws SQLException {
         String[] arr = query.split(" ");
         String sql = "SELECT * FROM files WHERE (filename ILIKE ?)";
         int i;
@@ -92,7 +92,7 @@ public class FileRepository {
             ps.setString(i+1, "%" +arr[i] + "%");
 
         }
-        List<String> filenameStrings = new ArrayList<>();
+        List<FileMetadata> files = new ArrayList<>();
         try(ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 String path = rs.getString("path");
@@ -104,9 +104,9 @@ public class FileRepository {
                 String date_created = rs.getString("date_created");
                 String date_modified = rs.getString("date_modified");
                 boolean exists_flag = rs.getBoolean("exists_flag");
-                filenameStrings.add(filename);
+                files.add(new FileMetadata(path,filename,extension,size,hash,content,date_created,date_modified));
                 //System.out.println("path: " + path);
-                System.out.println("filename: " + filename);
+                //System.out.println("filename: " + filename);
                 //System.out.println("extension: " + extension);
                 //System.out.println("size: " + size);
                 //System.out.println("hash: " + hash);
@@ -120,7 +120,7 @@ public class FileRepository {
             System.out.println("SEARCH FILENAME: Search statement failed");
         }
 
-        return filenameStrings;
+        return files;
 
     }
 
