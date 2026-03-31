@@ -4,28 +4,59 @@ import javafx.concurrent.Task;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.application.Application;
 
 import java.io.File;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.List;
 
 public class ApplicationGUI extends Application {
 
     FileRepository fileRepo = new FileRepository();
+    FileCrawler fileCrawler = new FileCrawler();
 
     public ApplicationGUI() throws SQLException {
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+        new Thread(() -> {
+            try {
+                fileCrawler.crawlFiles("C:\\Info\\J3S2\\SD\\testdir");
+                System.out.println("Scan finished");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (NoSuchAlgorithmException e) {
+                throw new RuntimeException(e);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+
         VBox mainLayout = new VBox(10);
         mainLayout.setStyle("-fx-padding: 20;");
         mainLayout.setAlignment(Pos.TOP_CENTER);
 
 
+
+
+        RadioButton nameRadio = new RadioButton("Search by Filename");
+        RadioButton contentRadio = new RadioButton("Search by Content");
+
+        ToggleGroup searchGroup = new ToggleGroup();
+        nameRadio.setToggleGroup(searchGroup);
+        contentRadio.setToggleGroup(searchGroup);
+
+        nameRadio.setSelected(true);
+
+        HBox radioBox = new HBox(15, nameRadio, contentRadio);
+        radioBox.setAlignment(Pos.CENTER);
 
         TextField searchBar = new TextField();
         searchBar.setMaxWidth(400);
@@ -72,11 +103,18 @@ public class ApplicationGUI extends Application {
 
 
         searchBar.textProperty().addListener((obs, oldVal, newVal) -> {
-
+            RadioButton selectedRadio = (RadioButton) searchGroup.getSelectedToggle();
+            String mode = selectedRadio.getText();
+            boolean isContent = mode.contains("Content");
             Task<List<FileMetadata>> searchTask = new Task<>() {
                 @Override
                 protected List<FileMetadata> call() throws Exception {
-                    return fileRepo.searchFilename(newVal);
+                    if(isContent){
+                        return fileRepo.searchContent(newVal);
+                    }else{
+                        return fileRepo.searchFilename(newVal);
+                    }
+
                 }
             };
 
@@ -105,7 +143,7 @@ public class ApplicationGUI extends Application {
         scrollPane.setStyle("-fx-background-color: transparent;");
         scrollPane.setMaxHeight(200);
 
-        mainLayout.getChildren().addAll(searchBar,scrollPane, resultBox);
+        mainLayout.getChildren().addAll(radioBox, searchBar,scrollPane, resultBox);
 
         Scene mainScene = new Scene(mainLayout, 700, 800);
         mainScene.getStylesheets().add(getClass().getResource("/fse/style.css").toExternalForm());
