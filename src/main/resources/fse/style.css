@@ -1,0 +1,19 @@
+.label-button{
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 8 16;
+    -fx-font-size: 14px;
+
+}
+
+.label-button:hover{
+    -fx-background-color: #f0f0f0;
+}
+
+.label-button:selected{
+    -fx-background-color: #e3f2fd;
+    -fx-text-fill: #1976d2;
+    -fx-border-color: #1976d2;
+    -fx-border-width: 0 0 0 4;
+}
