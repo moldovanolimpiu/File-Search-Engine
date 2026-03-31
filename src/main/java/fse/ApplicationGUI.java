@@ -3,12 +3,12 @@ package fse;
 import javafx.concurrent.Task;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.application.Application;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -23,54 +23,56 @@ public class ApplicationGUI extends Application {
     public void start(Stage primaryStage) throws Exception {
         VBox mainLayout = new VBox(10);
         mainLayout.setStyle("-fx-padding: 20;");
-        mainLayout.setAlignment(Pos.CENTER);
+        mainLayout.setAlignment(Pos.TOP_CENTER);
 
 
 
         TextField searchBar = new TextField();
-        searchBar.setMaxWidth(150);
+        searchBar.setMaxWidth(400);
         searchBar.setPromptText("Search filenames...");
 
-        Label first = new Label("");
-        Label second = new Label("");
-        Label third = new Label("");
+        VBox resultsContainer = new VBox(5);
+        ToggleGroup selectionGroup = new ToggleGroup();
+
+
 
         searchBar.textProperty().addListener((obs, oldVal, newVal) -> {
 
-            Task<List<String>> searchTask = new Task<>() {
+            Task<List<FileMetadata>> searchTask = new Task<>() {
                 @Override
-                protected List<String> call() throws Exception {
+                protected List<FileMetadata> call() throws Exception {
                     return fileRepo.searchFilename(newVal);
                 }
             };
 
 
             searchTask.setOnSucceeded(e -> {
-                //updateResultsTable(searchTask.getValue());
-                List<String> results = searchTask.getValue();
-                if(!results.isEmpty()){
-                    first.setText(results.getFirst());
-                }else{
-                    first.setText("");
+                List<FileMetadata> results = searchTask.getValue();
+
+                resultsContainer.getChildren().clear();
+
+                for(FileMetadata file : results) {
+                    ToggleButton tb = new ToggleButton(file.getFileName());
+                    tb.setToggleGroup(selectionGroup);
+                    tb.setMaxWidth(700);
+                    tb.getStyleClass().add("label-button");
+
+                    resultsContainer.getChildren().add(tb);
                 }
-                if (results.size() > 1) {
-                    second.setText(results.get(1));
-                }else{
-                    second.setText("");
-                }
-                if (results.size() > 2) {
-                    third.setText(results.get(2));
-                }else{
-                    third.setText("");
-                }
+
             });
 
             new Thread(searchTask).start();
         });
+        ScrollPane scrollPane = new ScrollPane(resultsContainer);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setStyle("-fx-background-color: transparent;");
+        scrollPane.setMaxHeight(200);
 
-        mainLayout.getChildren().addAll(searchBar,first,second,third);
+        mainLayout.getChildren().addAll(searchBar,scrollPane);
 
         Scene mainScene = new Scene(mainLayout, 700, 800);
+        mainScene.getStylesheets().add(getClass().getResource("/fse/style.css").toExternalForm());
 
         primaryStage.setScene(mainScene);
         primaryStage.show();
