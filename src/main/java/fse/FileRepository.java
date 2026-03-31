@@ -72,11 +72,12 @@ public class FileRepository {
         return returnVal;
     }
 
-    public void purgeNonExistentFiles() throws SQLException {
+    public int purgeNonExistentFiles() throws SQLException {
         Statement st = con.createStatement();
-
-        st.executeUpdate("DELETE FROM files WHERE exists_flag = false");
+        int deletedCount;
+        deletedCount = st.executeUpdate("DELETE FROM files WHERE exists_flag = false");
         st.executeUpdate("UPDATE files SET exists_flag = false");
+        return deletedCount;
     }
 
     public List<FileMetadata> searchFilename(String query) throws SQLException {
