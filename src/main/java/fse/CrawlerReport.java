@@ -13,4 +13,20 @@ public class CrawlerReport {
         this.fileDeletions = fileDeletions;
         this.fileUpdates = fileUpdates;
     }
+
+    public int getFilesFound() {
+        return filesFound;
+    }
+
+    public int getFileInsertions() {
+        return fileInsertions;
+    }
+
+    public int getFileDeletions() {
+        return fileDeletions;
+    }
+
+    public int getFileUpdates() {
+        return fileUpdates;
+    }
 }
