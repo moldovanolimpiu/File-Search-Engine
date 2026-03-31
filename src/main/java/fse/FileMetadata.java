@@ -29,7 +29,16 @@ public class FileMetadata {
         this.datecreated = String.valueOf(Files.getAttribute(p, "creationTime"));
     }
 
-
+    public FileMetadata(String path, String fileName, String fileExtension, long fileSize, String hash, String content, String datecreated, String datemodified) {
+        this.path = path;
+        this.fileName = fileName;
+        this.fileExtension = fileExtension;
+        this.fileSize = fileSize;
+        this.hash = hash;
+        this.content = content;
+        this.datecreated = datecreated;
+        this.datemodified = datemodified;
+    }
 
     public String checksum(MessageDigest digest, File file) throws IOException {
         FileInputStream fis = new FileInputStream(file);
