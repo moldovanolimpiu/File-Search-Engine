@@ -44,7 +44,7 @@ public class FileCrawler {
     public void crawlFiles(String path) throws IOException, NoSuchAlgorithmException, SQLException {
         Path start = Paths.get(path);
         MessageDigest mdigest = MessageDigest.getInstance("MD5");
-        ChecksumGenerator checksumGenerator = new ChecksumGenerator();
+
         Tika tika = new Tika();
         FileRepository fileRepository = new FileRepository();
 
