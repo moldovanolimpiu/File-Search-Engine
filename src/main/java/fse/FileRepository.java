@@ -21,9 +21,9 @@ public class FileRepository {
     public FileRepository() throws SQLException {
     }
 
-    public void insertDatabase(FileMetadata metadata) throws SQLException {
+    public int insertDatabase(FileMetadata metadata) throws SQLException {
         String sqlSearch = "SELECT * FROM files where path = ?";
-
+        int returnVal = 0;
         try (PreparedStatement ps = con.prepareStatement(sqlSearch)) {
             ps.setString(1, metadata.getPath());
             ResultSet rs = ps.executeQuery();
@@ -42,6 +42,7 @@ public class FileRepository {
                     psInsert.setString(8, metadata.getDatemodified());
                     psInsert.setBoolean(9, true);
                     psInsert.executeUpdate();
+                    returnVal = 1;
                 }catch (SQLException e) {
                     System.out.println("INSERT: Insert statement failed");
 
@@ -57,6 +58,7 @@ public class FileRepository {
                     psUpdate.setString(4, metadata.getPath());
                     psUpdate.executeUpdate();
                     System.out.println("Updated file" + metadata.getFileName() + " at " +metadata.getPath());
+                    returnVal = 2;
                 }
                 String sqlFlag = "UPDATE files SET exists_flag = ? WHERE path = ?";
                 PreparedStatement psFlag = con.prepareStatement(sqlFlag);
@@ -67,6 +69,7 @@ public class FileRepository {
         }catch (SQLException e) {
             System.out.println("INSERT: Initial search statement failed");
         }
+        return returnVal;
     }
 
     public void purgeNonExistentFiles() throws SQLException {
