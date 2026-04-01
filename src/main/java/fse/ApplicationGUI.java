@@ -5,12 +5,15 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.application.Application;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.List;
@@ -19,33 +22,59 @@ public class ApplicationGUI extends Application {
 
     FileRepository fileRepo = new FileRepository();
     FileCrawler fileCrawler = new FileCrawler();
-
+    CrawlerReport report;
     public ApplicationGUI() throws SQLException {
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        new Thread(() -> {
-            try {
-                fileCrawler.crawlFiles("C:\\Info\\J3S2\\SD\\testdir");
-                System.out.println("Scan finished");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+        Label filesCrawlerReport = new Label("File Crawler Report:");
+        Label filesFoundLabel = new Label("Files Found: ");
+        Label filesInsertedLabel = new Label("Files Inserted: ");
+        Label filesDeletedLabel = new Label("Files Deleted: ");
+        Label filesUpdatedLabel = new Label("Files Updated: ");
+        Label indexingStatusLabel = new Label("Indexing C:\\Info\\J3S2, Standby...");
+
+        VBox reportBox = new VBox(10);
+        reportBox.setAlignment(Pos.CENTER_LEFT);
+        reportBox.getChildren().addAll(filesCrawlerReport, filesFoundLabel, filesInsertedLabel, filesDeletedLabel, filesUpdatedLabel, indexingStatusLabel);
+
+        Task<CrawlerReport> crawlTask = new Task<>() {
+            @Override
+            protected CrawlerReport call() throws Exception {
+                return fileCrawler.crawlFiles("C:\\Info\\J3S2");
             }
-        }).start();
+        };
+
+        crawlTask.setOnSucceeded(e -> {
+            CrawlerReport report = crawlTask.getValue();
+            filesFoundLabel.setText("Files Found: " + report.getFilesFound());
+            filesInsertedLabel.setText("Files Inserted: " + report.getFileInsertions());
+            filesDeletedLabel.setText("Files Deleted: " + report.getFileDeletions());
+            filesUpdatedLabel.setText("Files Updated: " + report.getFileUpdates());
+            indexingStatusLabel.setText("Finished indexing");
+        });
+
+        new Thread(crawlTask).start();
 
         VBox mainLayout = new VBox(10);
         mainLayout.setStyle("-fx-padding: 20;");
         mainLayout.setAlignment(Pos.TOP_CENTER);
 
 
+        Label directoryLabel = new Label("Directory:");
+        Button indexButton = new Button("Index");
+        TextField directoryBar = new TextField();
+        directoryBar.setMaxWidth(500);
+        directoryBar.setPromptText("Input Directory...");
+        HBox.setHgrow(directoryBar, Priority.ALWAYS);
+        HBox directoryBox = new HBox(10);
+        directoryBox.setAlignment(Pos.CENTER);
+        directoryBox.getChildren().addAll(directoryLabel, directoryBar, indexButton);
 
 
+        // search selection buttons
         RadioButton nameRadio = new RadioButton("Search by Filename");
         RadioButton contentRadio = new RadioButton("Search by Content");
 
@@ -58,9 +87,49 @@ public class ApplicationGUI extends Application {
         HBox radioBox = new HBox(15, nameRadio, contentRadio);
         radioBox.setAlignment(Pos.CENTER);
 
+
+
+        indexButton.setOnAction(e -> {
+
+            filesInsertedLabel.setText("Files Inserted: ");
+            filesFoundLabel.setText("Files Found: ");
+            filesDeletedLabel.setText("Files Deleted: ");
+            filesUpdatedLabel.setText("Files Updated: ");
+
+            System.out.println(directoryBar.getText());
+            if(isValidPath(directoryBar.getText())) {
+                indexingStatusLabel.setText("Indexing " + directoryBar.getText() + ", Standby...");
+                Task<CrawlerReport> crawlLiveUpdate = new Task<>() {
+                    @Override
+                    protected CrawlerReport call() throws Exception {
+                        return fileCrawler.crawlFiles(directoryBar.getText());
+                    }
+                };
+
+
+                crawlLiveUpdate.setOnSucceeded(clu -> {
+                    CrawlerReport report = crawlLiveUpdate.getValue();
+                    filesFoundLabel.setText("Files Found: " + report.getFilesFound());
+                    filesInsertedLabel.setText("Files Inserted: " + report.getFileInsertions());
+                    filesDeletedLabel.setText("Files Deleted: " + report.getFileDeletions());
+                    filesUpdatedLabel.setText("Files Updated: " + report.getFileUpdates());
+                    indexingStatusLabel.setText("Finished indexing");
+                });
+                new Thread(crawlLiveUpdate).start();
+            }else{
+                System.out.println("Invalid Path");
+                indexingStatusLabel.setText("Invalid Path");
+            }
+
+
+        });
+
+
+
+
         TextField searchBar = new TextField();
-        searchBar.setMaxWidth(400);
-        searchBar.setPromptText("Search filenames...");
+        searchBar.setMaxWidth(500);
+        searchBar.setPromptText("Search...");
 
         Label fileNameLabel = new Label("");
         Label filePathLabel = new Label("");
@@ -76,9 +145,6 @@ public class ApplicationGUI extends Application {
         VBox resultBox = new VBox(10);
         resultBox.setAlignment(Pos.CENTER_LEFT);
         resultBox.getChildren().addAll(fileNameLabel, filePathLabel,fileExtensionLabel,fileSizeLabel,fileHashLabel,fileDateCreatedLabel,fileDateModifiedLabel,fileContentLabel);
-
-
-
 
         VBox resultsContainer = new VBox(5);
         ToggleGroup selectionGroup = new ToggleGroup();
@@ -143,7 +209,7 @@ public class ApplicationGUI extends Application {
         scrollPane.setStyle("-fx-background-color: transparent;");
         scrollPane.setMaxHeight(200);
 
-        mainLayout.getChildren().addAll(radioBox, searchBar,scrollPane, resultBox);
+        mainLayout.getChildren().addAll(reportBox, radioBox,directoryBox, searchBar,scrollPane, resultBox);
 
         Scene mainScene = new Scene(mainLayout, 700, 800);
         mainScene.getStylesheets().add(getClass().getResource("/fse/style.css").toExternalForm());
@@ -186,5 +252,14 @@ public class ApplicationGUI extends Application {
         }
 
         return sb;
+    }
+
+    private static boolean isValidPath(String path) {
+        try {
+            Paths.get(path);
+        } catch (InvalidPathException | NullPointerException ex) {
+            return false;
+        }
+        return true;
     }
 }
