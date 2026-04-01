@@ -64,65 +64,41 @@ public class FileMetadata {
         return path;
     }
 
-    public void setPath(String path) {
-        this.path = path;
-    }
 
     public String getFileName() {
         return fileName;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
 
     public String getFileExtension() {
         return fileExtension;
     }
 
-    public void setFileExtension(String fileExtension) {
-        this.fileExtension = fileExtension;
-    }
 
     public long getFileSize() {
         return fileSize;
     }
 
-    public void setFileSize(long fileSize) {
-        this.fileSize = fileSize;
-    }
 
     public String getHash() {
         return hash;
     }
 
-    public void setHash(String hash) {
-        this.hash = hash;
-    }
 
     public String getContent() {
         return content;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
 
     public String getDatecreated() {
         return datecreated;
     }
 
-    public void setDatecreated(String datecreated) {
-        this.datecreated = datecreated;
-    }
 
     public String getDatemodified() {
         return datemodified;
     }
 
-    public void setDatemodified(String datemodified) {
-        this.datemodified = datemodified;
-    }
 
     @Override
     public String toString() {

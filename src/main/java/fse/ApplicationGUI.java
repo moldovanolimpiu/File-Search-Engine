@@ -10,11 +10,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.application.Application;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.List;
 

@@ -11,10 +11,7 @@ public class FileRepository {
     String url = System.getenv("FSE_DB_URL");
     String user = System.getenv("FSE_DB_USER");
     String password = System.getenv("FSE_DB_PASS");
-
-
-
-
+    
     Connection con = DriverManager.getConnection(url,user,password);
 
 
@@ -157,63 +154,5 @@ public class FileRepository {
         return files;
 
     }
-
-    public void addToDbTest() throws SQLException {
-        String sql = "INSERT INTO files(path, filename, extension, size, hash, content, date_created, date_modified, exists_flag) VALUES" +
-                "(?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-        PreparedStatement ps = con.prepareStatement(sql);
-
-        ps.setString(1,"filepathlol/randomfilename");
-        ps.setString(2,"randomfilename");
-        ps.setString(3,"lol");
-        ps.setLong(4,29425);
-        ps.setString(5,"checksum");
-        ps.setString(6,"content");
-        ps.setString(7,"20/12/2000");
-        ps.setString(8,"21/12/2020");
-        ps.setBoolean(9,true);
-        ps.executeUpdate();
-
-
-    }
-
-    public void selectTest() throws SQLException {
-        try {
-            String sql = "SELECT * FROM files where filename = ?";
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.setString(1,"randomfilenam");
-            try(ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    String path = rs.getString("path");
-                    String filename = rs.getString("filename");
-                    String extension = rs.getString("extension");
-                    long size = rs.getLong("size");
-                    String hash = rs.getString("hash");
-                    String content = rs.getString("content");
-                    String date_created = rs.getString("date_created");
-                    String date_modified = rs.getString("date_modified");
-                    boolean exists_flag = rs.getBoolean("exists_flag");
-                    System.out.println("path: " + path);
-                    System.out.println("filename: " + filename);
-                    System.out.println("extension: " + extension);
-                    System.out.println("size: " + size);
-                    System.out.println("hash: " + hash);
-                    System.out.println("content: " + content);
-                    System.out.println("date_created: " + date_created);
-                    System.out.println("date_modified: " + date_modified);
-                    System.out.println("exists_flag: " + exists_flag);
-
-                }
-            }catch (SQLException es) {
-                System.out.println("Item not found");
-            }
-        }catch (SQLException e) {
-            System.out.println("Query failed");
-        }
-    }
-
-
-
 
 }

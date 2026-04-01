@@ -16,31 +16,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class FileCrawler {
 
-    private String sizeFormat(long size) {
-
-        //long var = 0;
-        String appendage;
-        int count = 0;
-        while(size > 1023){
-            size =size/1024;
-            count++;
-        }
-        if(count == 0){
-            appendage = size + " B";
-        }else if(count == 1){
-            appendage = size + " KB";
-        }else if(count == 2){
-            appendage = size + " MB";
-        }else if(count == 3){
-            appendage = size + " GB";
-        }else{
-            appendage = size + " TB";
-        }
-        return appendage;
-
-    }
-
-
     public CrawlerReport crawlFiles(String path) throws IOException, NoSuchAlgorithmException, SQLException {
         Path start = Paths.get(path);
         MessageDigest mdigest = MessageDigest.getInstance("MD5");
