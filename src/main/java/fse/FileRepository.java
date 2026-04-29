@@ -155,4 +155,39 @@ public class FileRepository {
 
     }
 
+    public QueryData queryProcessor(String query){
+        String[] arr = query.split(" ");
+
+        String path = null;
+        StringBuilder sb = new StringBuilder();
+
+
+        int i = 0;
+        while(i < arr.length){
+            if(arr[i].startsWith("path:")){
+                path = arr[i].substring(5);
+                i++;
+            }else if(arr[i].startsWith("content:")){
+                    sb.append(arr[i].substring(8));
+                    i++;
+                    while(i<arr.length && (!arr[i].startsWith("path:")) && !arr[i].startsWith("content:")){
+                        sb.append(" ");
+                        sb.append(arr[i]);
+                        i++;
+                    }
+            }else{
+                i++;
+            }
+
+        }
+        String content = sb.toString();
+
+
+        QueryData queryData = new QueryData(path,content);
+
+
+        return queryData;
+    }
+    
+
 }
