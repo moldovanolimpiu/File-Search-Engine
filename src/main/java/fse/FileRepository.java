@@ -188,6 +188,23 @@ public class FileRepository {
 
         return queryData;
     }
-    
+    public List<FileMetadata> searchCompound(String query) throws SQLException {
+        QueryData querydata = queryProcessor(query);
+        List<FileMetadata> files = new ArrayList<>();
+
+        if(querydata.getContent() == null && querydata.getPath() == null){
+            return files;
+        }else if(querydata.getPath() == null){
+            files = searchContent(querydata.getContent());
+            return files;
+        }else if(querydata.getContent().isEmpty()){
+            files = searchFilename(querydata.getPath());
+            return files;
+        }else{
+            System.out.println("both");
+            return files;
+        }
+
+    }
 
 }
