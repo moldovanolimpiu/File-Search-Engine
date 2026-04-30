@@ -172,11 +172,7 @@ public class ApplicationGUI extends Application {
             Task<List<FileMetadata>> searchTask = new Task<>() {
                 @Override
                 protected List<FileMetadata> call() throws Exception {
-                    if(isContent){
-                        return fileRepo.searchContent(newVal);
-                    }else{
-                        return fileRepo.searchFilename(newVal);
-                    }
+                    return fileRepo.searchCompound(newVal);
 
                 }
             };
