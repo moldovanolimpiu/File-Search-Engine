@@ -13,6 +13,7 @@ import javafx.application.Application;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.util.Comparator;
 import java.util.List;
 
 public class ApplicationGUI extends Application {
@@ -180,6 +181,7 @@ public class ApplicationGUI extends Application {
 
             searchTask.setOnSucceeded(e -> {
                 List<FileMetadata> results = searchTask.getValue();
+                results.sort(Comparator.comparingInt(FileMetadata::getRank));
 
                 resultsContainer.getChildren().clear();
 
