@@ -227,6 +227,9 @@ public class FileRepository {
                 path = arr[i].substring(5);
                 i++;
             }else if(arr[i].startsWith("content:")){
+                    if(!sb.isEmpty()){
+                        sb.append(" ");
+                    }
                     sb.append(arr[i].substring(8));
                     i++;
                     while(i<arr.length && (!arr[i].startsWith("path:")) && !arr[i].startsWith("content:")){
@@ -260,7 +263,6 @@ public class FileRepository {
             files = searchPath(querydata.getPath());
             return files;
         }else{
-            //System.out.println("both");
             files = searchPathContent(querydata);
             return files;
         }
