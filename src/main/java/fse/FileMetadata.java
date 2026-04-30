@@ -17,6 +17,7 @@ public class FileMetadata {
     private String content;
     private String datecreated;
     private String datemodified;
+    private int rank_depth;
 
     public FileMetadata(Path p, String dirpath, File file, MessageDigest mdigest, String content) throws IOException {
         this.path = dirpath;
@@ -27,9 +28,11 @@ public class FileMetadata {
         this.content = content;
         this.datemodified = String.valueOf(Files.getLastModifiedTime(p));
         this.datecreated = String.valueOf(Files.getAttribute(p, "creationTime"));
+        String[] pathSplit = this.path.split("\\\\");
+        this.rank_depth = pathSplit.length;
     }
 
-    public FileMetadata(String path, String fileName, String fileExtension, long fileSize, String hash, String content, String datecreated, String datemodified) {
+    public FileMetadata(String path, String fileName, String fileExtension, long fileSize, String hash, String content, String datecreated, String datemodified, int rank_depth) {
         this.path = path;
         this.fileName = fileName;
         this.fileExtension = fileExtension;
@@ -38,6 +41,7 @@ public class FileMetadata {
         this.content = content;
         this.datecreated = datecreated;
         this.datemodified = datemodified;
+        this.rank_depth = rank_depth;
     }
 
     public String checksum(MessageDigest digest, File file) throws IOException {
@@ -98,6 +102,8 @@ public class FileMetadata {
     public String getDatemodified() {
         return datemodified;
     }
+
+    public int getRank() {return rank_depth;}
 
 
     @Override
