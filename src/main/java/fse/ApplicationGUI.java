@@ -71,22 +71,6 @@ public class ApplicationGUI extends Application {
         directoryBox.setAlignment(Pos.CENTER);
         directoryBox.getChildren().addAll(directoryLabel, directoryBar, indexButton);
 
-
-        // search selection buttons
-        RadioButton nameRadio = new RadioButton("Search by Filename");
-        RadioButton contentRadio = new RadioButton("Search by Content");
-
-        ToggleGroup searchGroup = new ToggleGroup();
-        nameRadio.setToggleGroup(searchGroup);
-        contentRadio.setToggleGroup(searchGroup);
-
-        nameRadio.setSelected(true);
-
-        HBox radioBox = new HBox(15, nameRadio, contentRadio);
-        radioBox.setAlignment(Pos.CENTER);
-
-
-
         indexButton.setOnAction(e -> {
 
             filesInsertedLabel.setText("Files Inserted: ");
@@ -167,9 +151,7 @@ public class ApplicationGUI extends Application {
 
 
         searchBar.textProperty().addListener((obs, oldVal, newVal) -> {
-            RadioButton selectedRadio = (RadioButton) searchGroup.getSelectedToggle();
-            String mode = selectedRadio.getText();
-            boolean isContent = mode.contains("Content");
+
             Task<List<FileMetadata>> searchTask = new Task<>() {
                 @Override
                 protected List<FileMetadata> call() throws Exception {
@@ -204,7 +186,7 @@ public class ApplicationGUI extends Application {
         scrollPane.setStyle("-fx-background-color: transparent;");
         scrollPane.setMaxHeight(200);
 
-        mainLayout.getChildren().addAll(reportBox, radioBox,directoryBox, searchBar,scrollPane, resultBox);
+        mainLayout.getChildren().addAll(reportBox, directoryBox, searchBar,scrollPane, resultBox);
 
         Scene mainScene = new Scene(mainLayout, 700, 800);
         mainScene.getStylesheets().add(getClass().getResource("/fse/style.css").toExternalForm());
