@@ -179,6 +179,41 @@ public class FileRepository {
         return files;
     }
 
+    public List<FileMetadata> searchPathContent(QueryData queryData) throws SQLException {
+        String[] contentArr = queryData.getContent().split(" ");
+        String pathQuery = queryData.getPath();
+        String sql = "SELECT * FROM files WHERE (path ILIKE ?) AND (content ILIKE ?)";
+        int i;
+        for(i = 1; i < contentArr.length; i++){
+            sql = sql + " AND (content ILIKE ?)";
+        }
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setString(1, "%" +pathQuery + "%");
+        ps.setString(2, "%" +contentArr[0] + "%");
+        for(i = 1; i < contentArr.length; i++){
+            ps.setString(i+2, "%" +contentArr[i] + "%");
+        }
+        List<FileMetadata> files = new ArrayList<>();
+        try(ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String path = rs.getString("path");
+                String filename = rs.getString("filename");
+                String extension = rs.getString("extension");
+                long size = rs.getLong("size");
+                String hash = rs.getString("hash");
+                String content = rs.getString("content");
+                String date_created = rs.getString("date_created");
+                String date_modified = rs.getString("date_modified");
+                files.add(new FileMetadata(path,filename,extension,size,hash,content,date_created,date_modified));
+            }
+        }catch (SQLException e) {
+            System.out.println("SEARCH PATH/CONTENT: Search statement failed");
+        }
+        return files;
+
+
+    }
+
     public QueryData queryProcessor(String query){
         String[] arr = query.split(" ");
 
@@ -225,7 +260,8 @@ public class FileRepository {
             files = searchPath(querydata.getPath());
             return files;
         }else{
-            System.out.println("both");
+            //System.out.println("both");
+            files = searchPathContent(querydata);
             return files;
         }
 
