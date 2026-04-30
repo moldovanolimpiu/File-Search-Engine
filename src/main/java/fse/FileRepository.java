@@ -181,18 +181,29 @@ public class FileRepository {
 
     public List<FileMetadata> searchPathContent(QueryData queryData) throws SQLException {
         String[] contentArr = queryData.getContent().split(" ");
-        String pathQuery = queryData.getPath();
-        String sql = "SELECT * FROM files WHERE (path ILIKE ?) AND (content ILIKE ?)";
-        int i;
-        for(i = 1; i < contentArr.length; i++){
-            sql = sql + " AND (content ILIKE ?)";
+        String[] pathArr = queryData.getPath().split(" ");
+
+        StringBuilder sql = new StringBuilder("SELECT * FROM files WHERE 1=1");
+        for(String str : pathArr){
+            sql.append(" AND (path ILIKE ?)");
         }
-        PreparedStatement ps = con.prepareStatement(sql);
-        ps.setString(1, "%" +pathQuery + "%");
-        ps.setString(2, "%" +contentArr[0] + "%");
-        for(i = 1; i < contentArr.length; i++){
-            ps.setString(i+2, "%" +contentArr[i] + "%");
+        for(String str : contentArr){
+            sql.append(" AND (content ILIKE ?)");
         }
+        PreparedStatement ps = con.prepareStatement(sql.toString());
+        int param = 1;
+        for(String str : pathArr){
+            ps.setString(param, "%" + str + "%");
+            param++;
+        }
+        for(String str : contentArr){
+            ps.setString(param, "%" + str + "%");
+            param++;
+        }
+
+        System.out.println(sql.toString());
+
+
         List<FileMetadata> files = new ArrayList<>();
         try(ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -217,24 +228,27 @@ public class FileRepository {
     public QueryData queryProcessor(String query){
         String[] arr = query.split(" ");
 
-        String path = null;
-        StringBuilder sb = new StringBuilder();
+        StringBuilder pathStringBuilder = new StringBuilder();
+        StringBuilder contentStringBuilder = new StringBuilder();
 
 
         int i = 0;
         while(i < arr.length){
             if(arr[i].startsWith("path:")){
-                path = arr[i].substring(5);
+                if(!pathStringBuilder.isEmpty()){
+                    pathStringBuilder.append(" ");
+                }
+                pathStringBuilder.append(arr[i].substring(5));
                 i++;
             }else if(arr[i].startsWith("content:")){
-                    if(!sb.isEmpty()){
-                        sb.append(" ");
+                    if(!contentStringBuilder.isEmpty()){
+                        contentStringBuilder.append(" ");
                     }
-                    sb.append(arr[i].substring(8));
+                    contentStringBuilder.append(arr[i].substring(8));
                     i++;
                     while(i<arr.length && (!arr[i].startsWith("path:")) && !arr[i].startsWith("content:")){
-                        sb.append(" ");
-                        sb.append(arr[i]);
+                        contentStringBuilder.append(" ");
+                        contentStringBuilder.append(arr[i]);
                         i++;
                     }
             }else{
@@ -242,7 +256,10 @@ public class FileRepository {
             }
 
         }
-        String content = sb.toString();
+        String content = contentStringBuilder.toString();
+        String path = pathStringBuilder.toString();
+        System.out.println("SEARCH CONTENT: " + content);
+        System.out.println("SEARCH PATH: " + path);
 
 
         QueryData queryData = new QueryData(path,content);
@@ -256,7 +273,7 @@ public class FileRepository {
 
         if(querydata.getContent() == null && querydata.getPath() == null){
             return files;
-        }else if(querydata.getPath() == null){
+        }else if(querydata.getPath().isEmpty()){
             files = searchContent(querydata.getContent());
             return files;
         }else if(querydata.getContent().isEmpty()){
