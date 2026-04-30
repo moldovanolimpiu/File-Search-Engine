@@ -21,12 +21,13 @@ public class FileRepository {
     public int insertDatabase(FileMetadata metadata) throws SQLException {
         String sqlSearch = "SELECT * FROM files where path = ?";
         int returnVal = 0;
+
         try (PreparedStatement ps = con.prepareStatement(sqlSearch)) {
             ps.setString(1, metadata.getPath());
             ResultSet rs = ps.executeQuery();
             if (!rs.next()) {
-                String sqlInsert = "INSERT INTO files(path, filename, extension, size, hash, content, date_created, date_modified, exists_flag) VALUES" +
-                        "(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                String sqlInsert = "INSERT INTO files(path, filename, extension, size, hash, content, date_created, date_modified, exists_flag, rank_depth) VALUES" +
+                        "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                 try(PreparedStatement psInsert = con.prepareStatement(sqlInsert)) {
                     psInsert.setString(1, metadata.getPath());
@@ -38,6 +39,7 @@ public class FileRepository {
                     psInsert.setString(7, metadata.getDatecreated());
                     psInsert.setString(8, metadata.getDatemodified());
                     psInsert.setBoolean(9, true);
+                    psInsert.setInt(10, metadata.getRank());
                     psInsert.executeUpdate();
                     returnVal = 1;
                 }catch (SQLException e) {
@@ -104,7 +106,7 @@ public class FileRepository {
                 String content = rs.getString("content");
                 String date_created = rs.getString("date_created");
                 String date_modified = rs.getString("date_modified");
-                files.add(new FileMetadata(path,filename,extension,size,hash,content,date_created,date_modified));
+                //files.add(new FileMetadata(path,filename,extension,size,hash,content,date_created,date_modified));
 
 
             }
@@ -144,13 +146,15 @@ public class FileRepository {
                 String content = rs.getString("content");
                 String date_created = rs.getString("date_created");
                 String date_modified = rs.getString("date_modified");
-                files.add(new FileMetadata(path,filename,extension,size,hash,content,date_created,date_modified));
+                int rank_depth = rs.getInt("rank_depth");
+                files.add(new FileMetadata(path,filename,extension,size,hash,content,date_created,date_modified,rank_depth));
 
 
             }
         }catch (SQLException e) {
             System.out.println("SEARCH CONTENT: Search statement failed");
         }
+
         return files;
 
     }
@@ -171,7 +175,8 @@ public class FileRepository {
                 String content = rs.getString("content");
                 String date_created = rs.getString("date_created");
                 String date_modified = rs.getString("date_modified");
-                files.add(new FileMetadata(path,filename,extension,size,hash,content,date_created,date_modified));
+                int rank_depth = rs.getInt("rank_depth");
+                files.add(new FileMetadata(path,filename,extension,size,hash,content,date_created,date_modified,rank_depth));
             }
         }catch (SQLException e) {
             System.out.println("SEARCH PATH: Search statement failed");
@@ -215,7 +220,8 @@ public class FileRepository {
                 String content = rs.getString("content");
                 String date_created = rs.getString("date_created");
                 String date_modified = rs.getString("date_modified");
-                files.add(new FileMetadata(path,filename,extension,size,hash,content,date_created,date_modified));
+                int rank_depth = rs.getInt("rank_depth");
+                files.add(new FileMetadata(path,filename,extension,size,hash,content,date_created,date_modified,rank_depth));
             }
         }catch (SQLException e) {
             System.out.println("SEARCH PATH/CONTENT: Search statement failed");
