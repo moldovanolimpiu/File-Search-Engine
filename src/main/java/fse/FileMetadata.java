@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.security.MessageDigest;
 
 public class FileMetadata {
@@ -18,6 +20,7 @@ public class FileMetadata {
     private String datecreated;
     private String datemodified;
     private int rank_depth;
+    private String dataccessed;
 
     public FileMetadata(Path p, String dirpath, File file, MessageDigest mdigest, String content) throws IOException {
         this.path = dirpath;
@@ -32,7 +35,7 @@ public class FileMetadata {
         this.rank_depth = pathSplit.length;
     }
 
-    public FileMetadata(String path, String fileName, String fileExtension, long fileSize, String hash, String content, String datecreated, String datemodified, int rank_depth) {
+    public FileMetadata(String path, String fileName, String fileExtension, long fileSize, String hash, String content, String datecreated, String datemodified, int rank_depth) throws IOException {
         this.path = path;
         this.fileName = fileName;
         this.fileExtension = fileExtension;
@@ -42,6 +45,14 @@ public class FileMetadata {
         this.datecreated = datecreated;
         this.datemodified = datemodified;
         this.rank_depth = rank_depth;
+        this.dataccessed = obtainDataAccess(this.path);
+
+    }
+
+    private String obtainDataAccess(String filePath) throws IOException {
+        Path pathGen = Paths.get(filePath);
+        BasicFileAttributes attrs = Files.readAttributes(pathGen, BasicFileAttributes.class);
+        return attrs.lastAccessTime().toString();
     }
 
     public String checksum(MessageDigest digest, File file) throws IOException {
@@ -104,6 +115,8 @@ public class FileMetadata {
     }
 
     public int getRank() {return rank_depth;}
+
+    public String getDateccessed() {return dataccessed;}
 
 
     @Override
