@@ -1,5 +1,6 @@
 package fse;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -153,6 +154,8 @@ public class FileRepository {
             }
         }catch (SQLException e) {
             System.out.println("SEARCH CONTENT: Search statement failed");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         return files;
@@ -180,6 +183,8 @@ public class FileRepository {
             }
         }catch (SQLException e) {
             System.out.println("SEARCH PATH: Search statement failed");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return files;
     }
@@ -225,6 +230,8 @@ public class FileRepository {
             }
         }catch (SQLException e) {
             System.out.println("SEARCH PATH/CONTENT: Search statement failed");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return files;
 
