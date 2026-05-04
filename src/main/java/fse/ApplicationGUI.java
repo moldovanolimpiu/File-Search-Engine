@@ -71,6 +71,7 @@ public class ApplicationGUI extends Application {
         directoryBox.setAlignment(Pos.CENTER);
         directoryBox.getChildren().addAll(directoryLabel, directoryBar, indexButton);
 
+
         indexButton.setOnAction(e -> {
 
             filesInsertedLabel.setText("Files Inserted: ");
@@ -113,6 +114,22 @@ public class ApplicationGUI extends Application {
         searchBar.setMaxWidth(500);
         searchBar.setPromptText("Search...");
 
+        Label searchLabel = new Label("Search:");
+
+        ComboBox<String> rankingBox = new ComboBox<>();
+        rankingBox.getItems().addAll(
+                "Path Depth",
+                "Alphabetical",
+                "Date accessed"
+        );
+
+        rankingBox.setValue("Path Depth");
+
+        HBox searchBox = new HBox(10);
+        searchBox.setAlignment(Pos.CENTER);
+        HBox.setHgrow(searchBar, Priority.ALWAYS);
+        searchBox.getChildren().addAll(searchLabel, searchBar,rankingBox);
+
         Label fileNameLabel = new Label("");
         Label filePathLabel = new Label("");
         Label fileExtensionLabel = new Label("");
@@ -148,6 +165,10 @@ public class ApplicationGUI extends Application {
             }
         });
 
+        rankingBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            searchBar.setText(searchBar.getText());
+        });
+
 
 
         searchBar.textProperty().addListener((obs, oldVal, newVal) -> {
@@ -163,7 +184,20 @@ public class ApplicationGUI extends Application {
 
             searchTask.setOnSucceeded(e -> {
                 List<FileMetadata> results = searchTask.getValue();
-                results.sort(Comparator.comparingInt(FileMetadata::getRank));
+
+                String selected = rankingBox.getValue();
+
+                switch(selected){
+                    case "Path Depth":
+                        results.sort(Comparator.comparingInt(FileMetadata::getRank));
+                        break;
+                    case "Alphabetical":
+                        results.sort(Comparator.comparing(FileMetadata::getFileName));
+                        break;
+                    case "Date accessed":
+                        results.sort(Comparator.comparing(FileMetadata::getDateccessed).reversed());
+                        break;
+                }
 
                 resultsContainer.getChildren().clear();
 
@@ -186,9 +220,9 @@ public class ApplicationGUI extends Application {
         scrollPane.setStyle("-fx-background-color: transparent;");
         scrollPane.setMaxHeight(200);
 
-        mainLayout.getChildren().addAll(reportBox, directoryBox, searchBar,scrollPane, resultBox);
+        mainLayout.getChildren().addAll(reportBox, directoryBox, searchBox,scrollPane, resultBox);
 
-        Scene mainScene = new Scene(mainLayout, 700, 800);
+        Scene mainScene = new Scene(mainLayout, 900, 800);
         mainScene.getStylesheets().add(getClass().getResource("/fse/style.css").toExternalForm());
 
         primaryStage.setScene(mainScene);
