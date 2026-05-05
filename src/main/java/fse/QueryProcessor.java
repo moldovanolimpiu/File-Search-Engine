@@ -44,4 +44,30 @@ public class QueryProcessor {
 
         return queryData;
     }
+
+    public String lastQueryItem(String query){
+        String[] arr = query.split(" ");
+        String type = "";
+        String finalItem = "";
+        String result;
+        boolean flag = true;
+        for(int i = arr.length-1; i >=0 && flag; i--){
+            if(arr[i].startsWith("path:")){
+                type = "path:";
+                flag = false;
+            }else if(arr[i].startsWith("content:")){
+                type = "content:";
+                flag = false;
+            }
+        }
+        if(arr[arr.length-1].startsWith("path:")){
+            finalItem = arr[arr.length-1].substring(5);
+        }else if(arr[arr.length-1].startsWith("content:")){
+            finalItem = arr[arr.length-1].substring(8);
+        }else{
+            finalItem = arr[arr.length-1];
+        }
+        result = type + finalItem;
+        return result;
+    }
 }
