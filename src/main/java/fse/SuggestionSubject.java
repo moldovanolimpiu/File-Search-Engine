@@ -1,14 +1,17 @@
 package fse;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SuggestionSubject implements Subject{
-    private List<Observer> observers;
+    private List<Observer> observers = new ArrayList<Observer>();
+
+    public SuggestionSubject() {}
 
     @Override
     public void addObserver(Observer o) {
-        observers.add(o);
+        this.observers.add(o);
     }
 
     @Override

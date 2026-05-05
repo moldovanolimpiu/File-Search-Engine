@@ -13,8 +13,13 @@ public class SuggestionObserver implements Observer {
     @Override
     public void update(String query) throws SQLException {
         QueryData queryData = queryProcessorSuggestion.queryProcessor(query);
+        String[] queryPath = queryData.getPath().split(" ");
+        String[] queryContent = queryData.getContent().split(" ");
         if(queryData.getPath()!=null){
-            pathRepo.insertDatabase(queryData.getPath());
+            for(String path : queryPath){
+                pathRepo.insertDatabase(path);
+            }
+
         }
 
 
