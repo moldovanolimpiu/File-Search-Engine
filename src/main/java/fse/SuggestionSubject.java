@@ -20,9 +20,9 @@ public class SuggestionSubject implements Subject{
     }
 
     @Override
-    public void notifyObservers(String query) throws SQLException {
+    public void notifyObservers(String query, PathSuggestionRepo pathRepo, ContentSuggestionRepo contentRepo) throws SQLException {
         for (Observer o : observers) {
-            o.update(query);
+            o.update(query, pathRepo, contentRepo);
         }
     }
 }

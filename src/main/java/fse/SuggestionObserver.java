@@ -4,15 +4,13 @@ import java.sql.SQLException;
 
 public class SuggestionObserver implements Observer {
 
-    PathSuggestionRepo pathRepo = new PathSuggestionRepo();
-    ContentSuggestionRepo contentRepo = new ContentSuggestionRepo();
     QueryProcessor queryProcessorSuggestion = new QueryProcessor();
 
     public SuggestionObserver() throws SQLException {
     }
 
     @Override
-    public void update(String query) throws SQLException {
+    public void update(String query, PathSuggestionRepo pathRepo, ContentSuggestionRepo contentRepo) throws SQLException {
         QueryData queryData = queryProcessorSuggestion.queryProcessor(query);
         String[] queryPath = queryData.getPath().split(" ");
         String[] queryContent = queryData.getContent().split(" ");
