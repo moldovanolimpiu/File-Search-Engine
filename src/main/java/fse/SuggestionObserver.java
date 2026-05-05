@@ -5,6 +5,7 @@ import java.sql.SQLException;
 public class SuggestionObserver implements Observer {
 
     PathSuggestionRepo pathRepo = new PathSuggestionRepo();
+    ContentSuggestionRepo contentRepo = new ContentSuggestionRepo();
     QueryProcessor queryProcessorSuggestion = new QueryProcessor();
 
     public SuggestionObserver() throws SQLException {
@@ -20,6 +21,11 @@ public class SuggestionObserver implements Observer {
                 pathRepo.insertDatabase(path);
             }
 
+        }
+        if(queryData.getContent()!=null){
+            for(String content : queryContent){
+                contentRepo.insertDatabase(content);
+            }
         }
 
 
