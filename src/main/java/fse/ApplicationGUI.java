@@ -64,7 +64,7 @@ public class ApplicationGUI extends Application {
         Label directoryLabel = new Label("Directory:");
         Button indexButton = new Button("Index");
         TextField directoryBar = new TextField();
-        directoryBar.setMaxWidth(500);
+        directoryBar.setMaxWidth(630);
         directoryBar.setPromptText("Input Directory...");
         HBox.setHgrow(directoryBar, Priority.ALWAYS);
         HBox directoryBox = new HBox(10);
@@ -123,12 +123,18 @@ public class ApplicationGUI extends Application {
                 "Date accessed"
         );
 
+        Button searchButton = new Button("Search");
+
+        searchButton.setOnAction(e -> searchBar.fireEvent(
+                new javafx.event.ActionEvent()
+        ));
+
         rankingBox.setValue("Path Depth");
 
         HBox searchBox = new HBox(10);
         searchBox.setAlignment(Pos.CENTER);
         HBox.setHgrow(searchBar, Priority.ALWAYS);
-        searchBox.getChildren().addAll(searchLabel, searchBar,rankingBox);
+        searchBox.getChildren().addAll(searchLabel, searchBar, searchButton,rankingBox);
 
         Label fileNameLabel = new Label("");
         Label filePathLabel = new Label("");
@@ -165,29 +171,24 @@ public class ApplicationGUI extends Application {
             }
         });
 
-        rankingBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-            searchBar.setText(searchBar.getText());
-        });
 
 
-
-        searchBar.textProperty().addListener((obs, oldVal, newVal) -> {
+        searchBar.setOnAction(e -> {
+            String query = searchBar.getText();
 
             Task<List<FileMetadata>> searchTask = new Task<>() {
                 @Override
                 protected List<FileMetadata> call() throws Exception {
-                    return fileRepo.searchCompound(newVal);
-
+                    return fileRepo.searchCompound(query);
                 }
             };
 
-
-            searchTask.setOnSucceeded(e -> {
+            searchTask.setOnSucceeded(ev -> {
                 List<FileMetadata> results = searchTask.getValue();
 
                 String selected = rankingBox.getValue();
 
-                switch(selected){
+                switch (selected) {
                     case "Path Depth":
                         results.sort(Comparator.comparingInt(FileMetadata::getRank));
                         break;
@@ -201,7 +202,7 @@ public class ApplicationGUI extends Application {
 
                 resultsContainer.getChildren().clear();
 
-                for(FileMetadata file : results) {
+                for (FileMetadata file : results) {
                     ToggleButton tb = new ToggleButton(file.getPath());
                     tb.setToggleGroup(selectionGroup);
                     tb.setMaxWidth(700);
@@ -210,7 +211,6 @@ public class ApplicationGUI extends Application {
 
                     resultsContainer.getChildren().add(tb);
                 }
-
             });
 
             new Thread(searchTask).start();
