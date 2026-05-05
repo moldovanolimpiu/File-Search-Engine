@@ -21,11 +21,19 @@ public class ApplicationGUI extends Application {
     FileRepository fileRepo = new FileRepository();
     FileCrawler fileCrawler = new FileCrawler();
     CrawlerReport report;
+
+    private SuggestionSubject suggestionSubject = new SuggestionSubject();
+    private SuggestionObserver suggestionObserver = new SuggestionObserver();
+
+
     public ApplicationGUI() throws SQLException {
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+        suggestionSubject.addObserver(suggestionObserver);
+
 
         Label filesCrawlerReport = new Label("File Crawler Report:");
         Label filesFoundLabel = new Label("Files Found: ");
@@ -179,6 +187,7 @@ public class ApplicationGUI extends Application {
             Task<List<FileMetadata>> searchTask = new Task<>() {
                 @Override
                 protected List<FileMetadata> call() throws Exception {
+                    suggestionSubject.notifyObservers(query);
                     return fileRepo.searchCompound(query);
                 }
             };
