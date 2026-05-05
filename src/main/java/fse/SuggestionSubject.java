@@ -1,5 +1,6 @@
 package fse;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class SuggestionSubject implements Subject{
@@ -16,7 +17,7 @@ public class SuggestionSubject implements Subject{
     }
 
     @Override
-    public void notifyObservers(String query) {
+    public void notifyObservers(String query) throws SQLException {
         for (Observer o : observers) {
             o.update(query);
         }

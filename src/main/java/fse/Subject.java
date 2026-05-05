@@ -1,7 +1,9 @@
 package fse;
 
+import java.sql.SQLException;
+
 public interface Subject {
     void addObserver(Observer o);
     void removeObserver(Observer o);
-    void notifyObservers(String query);
+    void notifyObservers(String query) throws SQLException;
 }
