@@ -1,9 +1,6 @@
 package fse;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class PathSuggestionRepo {
 
@@ -18,8 +15,19 @@ public class PathSuggestionRepo {
     }
 
     public void insertDatabase(String item) throws SQLException {
-        String sql = "INSERT INTO path_suggestions VALUES(?,?)";
-        PreparedStatement pstmt = con.prepareStatement(sql);
+        String sql = "INSERT INTO path_suggestions(name_suggestion, date_accessed) " +
+                "VALUES (?, ?) " +
+                "ON CONFLICT (name_suggestion) DO UPDATE " +
+                "SET date_accessed = ?";
+        try(PreparedStatement ps = con.prepareStatement(sql)) {
+            String currentDateTime = java.time.LocalDateTime.now().toString();
+            ps.setString(1, item);
+            ps.setString(2, currentDateTime);
+            ps.setString(3, currentDateTime);
+            ps.executeUpdate();
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 }
