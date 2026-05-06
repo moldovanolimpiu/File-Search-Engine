@@ -1,7 +1,10 @@
 package fse;
 
+import javafx.animation.PauseTransition;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
+import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -9,6 +12,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.application.Application;
+import javafx.util.Duration;
 
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
@@ -19,8 +23,11 @@ import java.util.List;
 public class ApplicationGUI extends Application {
 
     FileRepository fileRepo = new FileRepository();
+    PathSuggestionRepo pathSuggestionRepo = new PathSuggestionRepo();
+    ContentSuggestionRepo contentSuggestionRepo = new ContentSuggestionRepo();
     FileCrawler fileCrawler = new FileCrawler();
     CrawlerReport report;
+    QueryProcessor queryProcessor = new QueryProcessor();
 
     private SuggestionSubject suggestionSubject = new SuggestionSubject();
     private SuggestionObserver suggestionObserver = new SuggestionObserver();
@@ -179,6 +186,67 @@ public class ApplicationGUI extends Application {
             }
         });
 
+        ContextMenu suggestionsMenu = new ContextMenu();
+
+        PauseTransition pause = new PauseTransition(Duration.millis(200));
+
+        searchBar.textProperty().addListener((obs, oldVal, newVal) -> {
+            String querySuggestion = searchBar.getText();
+            pause.setOnFinished(e -> {
+
+                if (newVal == null || newVal.isBlank()) {
+                    suggestionsMenu.hide();
+                    return;
+                }
+
+                Task<List<Suggestion>> task = new Task<>() {
+                    @Override
+                    protected List<Suggestion> call() throws Exception {
+                        String suggestionItem = queryProcessor.lastQueryItem(querySuggestion);
+                        if(suggestionItem.startsWith("path:")){
+                            return pathSuggestionRepo.searchPathSuggestion(suggestionItem.substring(5));
+                        }else{
+                            return contentSuggestionRepo.searchContentSuggestion(suggestionItem.substring(8));
+                        }
+
+                    }
+                };
+
+                task.setOnSucceeded(ev -> {
+                    List<Suggestion> suggestions = task.getValue();
+                    suggestions.sort(Comparator.comparing(Suggestion::getTimestamp).reversed());
+
+                    if (suggestions.isEmpty()) {
+                        suggestionsMenu.hide();
+                        return;
+                    }
+
+                    suggestionsMenu.getItems().clear();
+
+                    for (Suggestion s : suggestions) {
+                        MenuItem item = new MenuItem(s.getName());
+
+                        item.setOnAction(a -> {
+                            searchBar.setText(queryProcessor.queryNoLastItem(querySuggestion) + s.getName());
+                            searchBar.end();
+                            suggestionsMenu.hide();
+                        });
+
+                        suggestionsMenu.getItems().add(item);
+                    }
+
+                    if (!suggestionsMenu.isShowing()) {
+                        suggestionsMenu.show(searchBar, Side.BOTTOM, 0, 0);
+                    }
+                });
+
+                new Thread(task).start();
+            });
+
+            pause.playFromStart();
+        });
+
+
 
 
         searchBar.setOnAction(e -> {
@@ -187,7 +255,7 @@ public class ApplicationGUI extends Application {
             Task<List<FileMetadata>> searchTask = new Task<>() {
                 @Override
                 protected List<FileMetadata> call() throws Exception {
-                    suggestionSubject.notifyObservers(query);
+                    suggestionSubject.notifyObservers(query, pathSuggestionRepo, contentSuggestionRepo);
                     return fileRepo.searchCompound(query);
                 }
             };
