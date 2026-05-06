@@ -1,6 +1,8 @@
 package fse;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PathSuggestionRepo {
 
@@ -28,6 +30,24 @@ public class PathSuggestionRepo {
         }catch (SQLException e) {
             e.printStackTrace();
         }
+
+    }
+
+    public List<Suggestion> searchPathSuggestion(String item) throws SQLException {
+        String sql = "SELECT * FROM path_suggestions WHERE (name_suggestion ILIKE ?)";
+        List<Suggestion> results = new ArrayList<>();
+        try(PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, "%" + item + "%");
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                String name = rs.getString("name_suggestion");
+                String date = rs.getString("date_accessed");
+                results.add(new Suggestion(name, date));
+            }
+        }
+
+        return results;
+
 
     }
 }
