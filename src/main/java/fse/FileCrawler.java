@@ -39,12 +39,12 @@ public class FileCrawler {
                                 String content = Files.readString(p);
 
                                 FileMetadata fileMetadata = new FileMetadata(p,dirpath,file,mdigest,content);
-                                int val = fileRepository.insertDatabase(fileMetadata);
+                                FileInsertEnum val = fileRepository.insertDatabase(fileMetadata);
                                 countTextFilesFound.addAndGet(1);
-                                if(val == 1){
+                                if(val == FileInsertEnum.INSERTED_FILE){
                                     countFileInsertions.addAndGet(1);
                                 }else{
-                                    if(val == 2){
+                                    if(val == FileInsertEnum.UPDATED_FILE){
                                         countFileUpdates.addAndGet(1);
                                     }
                                 }

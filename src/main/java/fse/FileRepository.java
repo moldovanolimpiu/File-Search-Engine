@@ -19,9 +19,9 @@ public class FileRepository {
     public FileRepository() throws SQLException {
     }
 
-    public int insertDatabase(FileMetadata metadata) throws SQLException {
+    public FileInsertEnum insertDatabase(FileMetadata metadata) throws SQLException {
         String sqlSearch = "SELECT * FROM files where path = ?";
-        int returnVal = 0;
+        FileInsertEnum returnVal = FileInsertEnum.NO_EVENT;
 
         try (PreparedStatement ps = con.prepareStatement(sqlSearch)) {
             ps.setString(1, metadata.getPath());
@@ -42,7 +42,7 @@ public class FileRepository {
                     psInsert.setBoolean(9, true);
                     psInsert.setInt(10, metadata.getRank());
                     psInsert.executeUpdate();
-                    returnVal = 1;
+                    returnVal = FileInsertEnum.INSERTED_FILE;
                 }catch (SQLException e) {
                     System.out.println("INSERT: Insert statement failed");
 
@@ -58,7 +58,7 @@ public class FileRepository {
                     psUpdate.setString(4, metadata.getPath());
                     psUpdate.executeUpdate();
                     System.out.println("Updated file" + metadata.getFileName() + " at " +metadata.getPath());
-                    returnVal = 2;
+                    returnVal = FileInsertEnum.UPDATED_FILE;
                 }
                 String sqlFlag = "UPDATE files SET exists_flag = ? WHERE path = ?";
                 PreparedStatement psFlag = con.prepareStatement(sqlFlag);
