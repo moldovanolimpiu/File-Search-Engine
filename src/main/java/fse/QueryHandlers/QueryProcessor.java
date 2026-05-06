@@ -1,4 +1,4 @@
-package fse;
+package fse.QueryHandlers;
 
 public class QueryProcessor {
 

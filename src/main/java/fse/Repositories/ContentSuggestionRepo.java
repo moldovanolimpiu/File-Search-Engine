@@ -1,23 +1,23 @@
-package fse;
+package fse.Repositories;
+
+import fse.SuggestionObserverPattern.Suggestion;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PathSuggestionRepo {
-
+public class ContentSuggestionRepo {
     String url = System.getenv("FSE_DB_URL");
     String user = System.getenv("FSE_DB_USER");
     String password = System.getenv("FSE_DB_PASS");
 
     Connection con = DriverManager.getConnection(url,user,password);
 
-    public PathSuggestionRepo() throws SQLException {
-
+    public ContentSuggestionRepo() throws SQLException {
     }
 
     public void insertDatabase(String item) throws SQLException {
-        String sql = "INSERT INTO path_suggestions(name_suggestion, date_accessed) " +
+        String sql = "INSERT INTO content_suggestions(name_suggestion, date_accessed) " +
                 "VALUES (?, ?) " +
                 "ON CONFLICT (name_suggestion) DO UPDATE " +
                 "SET date_accessed = ?";
@@ -33,8 +33,8 @@ public class PathSuggestionRepo {
 
     }
 
-    public List<Suggestion> searchPathSuggestion(String item) throws SQLException {
-        String sql = "SELECT * FROM path_suggestions WHERE (name_suggestion ILIKE ?)";
+    public List<Suggestion> searchContentSuggestion(String item) throws SQLException {
+        String sql = "SELECT * FROM content_suggestions WHERE (name_suggestion ILIKE ?)";
         List<Suggestion> results = new ArrayList<>();
         try(PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, "%" + item + "%");

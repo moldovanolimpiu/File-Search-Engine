@@ -1,4 +1,4 @@
-package fse;
+package fse.SuggestionObserverPattern;
 
 public class Suggestion {
     private String name;

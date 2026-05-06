@@ -1,10 +1,13 @@
-package fse;
+package fse.SuggestionObserverPattern;
+
+import fse.Repositories.ContentSuggestionRepo;
+import fse.Repositories.PathSuggestionRepo;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SuggestionSubject implements Subject{
+public class SuggestionSubject implements Subject {
     private List<Observer> observers = new ArrayList<Observer>();
 
     public SuggestionSubject() {}

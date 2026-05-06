@@ -1,4 +1,9 @@
-package fse;
+package fse.Repositories;
+
+import fse.FileData.FileInsertEnum;
+import fse.FileData.FileMetadata;
+import fse.QueryHandlers.QueryData;
+import fse.QueryHandlers.QueryProcessor;
 
 import java.io.IOException;
 import java.sql.*;

@@ -1,5 +1,6 @@
-package fse;
+package fse.FileData;
 
+import fse.Repositories.FileRepository;
 import org.apache.tika.Tika;
 
 

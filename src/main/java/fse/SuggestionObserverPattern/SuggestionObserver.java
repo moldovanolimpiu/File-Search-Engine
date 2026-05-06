@@ -1,4 +1,9 @@
-package fse;
+package fse.SuggestionObserverPattern;
+
+import fse.QueryHandlers.QueryData;
+import fse.QueryHandlers.QueryProcessor;
+import fse.Repositories.ContentSuggestionRepo;
+import fse.Repositories.PathSuggestionRepo;
 
 import java.sql.SQLException;
 

@@ -1,8 +1,17 @@
-package fse;
+package fse.GUI;
 
+import fse.FileData.CrawlerReport;
+import fse.FileData.FileCrawler;
+import fse.FileData.FileMetadata;
+import fse.QueryHandlers.QueryProcessor;
+import fse.Repositories.ContentSuggestionRepo;
+import fse.Repositories.FileRepository;
+import fse.Repositories.PathSuggestionRepo;
+import fse.SuggestionObserverPattern.Suggestion;
+import fse.SuggestionObserverPattern.SuggestionObserver;
+import fse.SuggestionObserverPattern.SuggestionSubject;
 import javafx.animation.PauseTransition;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Scene;

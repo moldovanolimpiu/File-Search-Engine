@@ -1,6 +1,4 @@
-package fse;
-
-import java.util.List;
+package fse.QueryHandlers;
 
 public class QueryData {
     private String path;

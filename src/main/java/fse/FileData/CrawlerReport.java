@@ -1,4 +1,4 @@
-package fse;
+package fse.FileData;
 
 public class CrawlerReport {
     private int filesFound;
