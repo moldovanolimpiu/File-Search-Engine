@@ -70,4 +70,20 @@ public class QueryProcessor {
         result = type + finalItem;
         return result;
     }
+
+    public String queryNoLastItem(String query){
+        String[] arr = query.split(" ");
+        System.out.println(query);
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int i = 0; i <arr.length-1 ; i++){
+            stringBuilder.append(arr[i]);
+            stringBuilder.append(" ");
+        }
+        if(arr[arr.length-1].startsWith("path:")){
+            stringBuilder.append("path:");
+        }else if(arr[arr.length-1].startsWith("content:")){
+            stringBuilder.append("content:");
+        }
+        return stringBuilder.toString();
+    }
 }
