@@ -7,7 +7,6 @@ module fse.filesearchengine {
 
 
     opens fse to javafx.fxml;
-    exports fse;
     exports fse.Repositories;
     opens fse.Repositories to javafx.fxml;
     exports fse.SuggestionObserverPattern;
